@@ -51,7 +51,7 @@ d[,order(colnames(d))]
 
 library(openxlsx)
 library(magrittr)
-ex_data <- read.xlsx(".\\lab2\\lab2.xlsx", 1)
+ex_data <- read.xlsx(".\\lab2-3\\lab2.xlsx", 1)
 colnames(ex_data)
 colnames(ex_data) = c("ФИО","Bugs","Hitboxes","AI","Optimization","Interface","Allies","Donate","Cutscenes","Random","Levelling","DLC","Openworld")
 ex_data
@@ -66,13 +66,77 @@ as.vector(apply(apply(ex_data[,c(2:length(colnames(ex_data)))],2,function(x) x>7
 
 apply(ex_data[,c(2:length(colnames(ex_data)))],2,mean) %>% sort(decreasing = TRUE)
 
+barplot(apply(ex_data[,c(2:length(colnames(ex_data)))],2,mean),xlab="Объекты оценки",cex.names=0.6,ylab="Средняя оценка")
 barplot(apply(ex_data[,c(2:length(colnames(ex_data)))],2,sum),xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
 
-v = c(1:10)
-dim(v)=c(2,5)
-v
-v = matrix(c(1:10),nrow=2,ncol=5,byrow=TRUE)
-v
-apply(v,2,function(x) x>3)
+ex_data$Bugs
+hist(ex_data$Bugs,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(ex_data$Hitboxes,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(ex_data$AI,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(ex_data$Optimization,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(ex_data$Interface,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(ex_data$Allies,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(ex_data$Donate,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(ex_data$Cutscenes,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(ex_data$Random,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(ex_data$Levelling,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(ex_data$DLC,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(ex_data$Openworld,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
 
-    
+boxplot(ex_data[,c(2:length(colnames(ex_data)))],xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+#lab 3
+apply(ex_data,2,median)
+
+
+summary(ex_data)
+attach(ex_data)
+summary(Bugs)
+detach(ex_data)
+
+library(dplyr)
+ex_data %>%filter(Bugs>2)
+apply(ex_data,2,sd)
+apply(ex_data,2,var)
+apply(ex_data,2,IQR,na.rm=TRUE)
+boxplot(ex_data$Bugs~ex_data$AI)
+summary(ex_data)
+
+res = boxplot(ex_data$Bugs~ex_data$AI)
+res
+bxp(re)
+
+#2
+summary(ex_data)
+apply(ex_data,2,sd,na.rm=TRUE)
+apply(ex_data,2,var,na.rm=TRUE)
+apply(ex_data,2,IQR,na.rm=TRUE)
+boxplot(ex_data[,c(2:length(colnames(ex_data)))])
+#3Выполняем сортировку наборов данных по выбранному признаку
+ex_data[order(ex_data$Bugs)]
+ex_data[order(ex_data$AI)]
+ex_data[order(ex_data$Allies)]
+#4
+new_data2 = subset(ex_data,AI>=5 & Bugs<10 | Hitboxes < 9, select = ФИО:Cutscenes)
+print(new_data2)
+
+print(dim(new_data2))
+
+summary(new_data2)
+
+
+apply(new_data2,2,sd)
+apply(new_data2,2,var)
+apply(new_data2,2,IQR,na.rm=TRUE)
+
+barplot(apply(new_data2[,c(2:length(colnames(new_data2)))],2,mean),xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+
+boxplot(new_data2[,c(2:length(colnames(new_data2)))])
+
+hist(new_data2$Bugs,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(new_data2$Hitboxes,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(new_data2$AI,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(new_data2$Optimization,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(new_data2$Interface,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(new_data2$Allies,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(new_data2$Donate,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
+hist(new_data2$Cutscenes,xlab="Объекты оценки",cex.names=0.6,ylab="Суммарная оценка")
