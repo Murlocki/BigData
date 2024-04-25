@@ -22,6 +22,10 @@ getTable = function(year){
   
 }
 
+a=TRUE
+if (a>1){
+  print(1)
+}
 #Создаем 1 общую таблицу
 data = do.call(rbind,lapply(years,getTable))
 rownames(data)=c(1:dim(data)[1])
@@ -159,3 +163,4 @@ assess[groups1==1,]
 assess[groups1==2,]
 assess[groups1==3,]
 assess[groups1==4,]
+
