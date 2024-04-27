@@ -1,7 +1,5 @@
 source('lab6/desc_analysis.R')
 
-rm(list=ls())
-
 data_scaled = scale(data,center=mins,scale=maxs-mins)
 data_scaled
 data
@@ -10,19 +8,22 @@ library(BBmisc)
 data_sc_norm = normalize(data_scaled,method="range",range=c(0,1))
 data_sc_norm
 
-
+data_k=data_sc_norm[,-(length(colnames(data_sc_norm)))]
+data_k
 #Построения локтя
 library (factoextra)
 library (cluster)
-fviz_nbclust(data_sc_norm[,-(length(colnames(data_sc_norm)))], kmeans, method = "wss")
+fviz_nbclust(data_k, kmeans, method = "wss")
 
 #Построили метод силуэта
-fviz_nbclust(data_sc_norm[,-(length(colnames(data_sc_norm)))], kmeans, method = "silhouette") +
+set.seed(123)
+fviz_nbclust(data_k, kmeans, method = "silhouette") +
   labs(subtitle = "Silhouette method")
 
 #
-fviz_nbclust( data, kmeans, method = "wss")
-gap_stat <- clusGap(data_sc_norm[,-(length(colnames(data_sc_norm)))], FUN = kmeans, nstart = 5,K.max =13, B = 5)
+set.seed(123)
+fviz_nbclust(data, kmeans, method = "wss")
+gap_stat <- clusGap(data_k, FUN = kmeans, K.max =12)
 #plot number of clusters vs. gap statistic
 fviz_gap_stat(gap_stat)
 
@@ -30,21 +31,49 @@ fviz_gap_stat(gap_stat)
 #Алгоритм на основе консенсуса
 install.packages('parameters')
 library(parameters)
-n_clust <- n_clusters(data.frame(data_sc_norm[,-(length(colnames(data_sc_norm)))]),
+n_clust <- n_clusters(data.frame(data_k),
                       package = c("easystats", "NbClust", "mclust"),
                       standardize = FALSE)
 n_clust
 plot(n_clust)
 
 
-dist.datas=dist(data_sc_norm[,-(length(colnames(data_sc_norm)))])
+dist.datas=dist(data_k)
 labels_datas=data_sc_norm[,(length(colnames(data_sc_norm)))]
 clust.datas=hclust(dist.datas,'ward.D')
 plot(clust.datas,labels_datas,cex=0.5)
-rect.hclust(clust.datas,k=4,border="red")
+rect.hclust(clust.datas,k=5,border="red")
 
-groups <- cutree(clust.datas, k=4)
-g1=data_sc_norm[groups==1,]
+groups <- cutree(clust.datas, k=5)
+
+options(max.print=999999)
+g1=cbind(data_k[groups==1,],c(1))
+colnames(g1)[14]=c('class')
 g1
-g2=data_sc_norm[groups==2,]
+g2=cbind(data_k[groups==2,],c(2))
+colnames(g2)[14]=c('class')
 g2
+g3=cbind(data_k[groups==3,],c(3))
+colnames(g3)[14]=c('class')
+g3
+g4=cbind(data_k[groups==4,],c(4))
+colnames(g4)[14]=c('class')
+g4
+g5=cbind(data_k[groups==5,],c(5))
+colnames(g5)[14]=c('class')
+g5
+
+layout(matrix(1:2,nrow=1,ncol=2))
+df = t(t(data.frame(colMeans(g1),colMeans(g2),colMeans(g3),colMeans(g4),colMeans(g5))))
+barplot(df[-14,],main='heart illnesses',col=rainbow(13),bty='n',beside=TRUE)
+plot(1:2,1:2,xaxt="n",yaxt="n",main="Легенда",xlab="",ylab="")
+legend("center", legend = rownames(df),cex=0.6, col=rainbow(13), lwd=10, bty = "n")
+
+data_classes = rbind(g1,g2,g3,g4,g5)
+data_classes
+data_for_boxplot=cbind(data[,-14],data_classes[,14])
+data_for_boxplot
+layout(matrix(1:16,nrow=4,ncol=4))
+for(i in 1:(length(colnames(data))-1)){
+  boxplot(data_for_boxplot[,i]~data_for_boxplot[,14],data=data_for_boxplot,xlab=colnames(data)[i])
+}

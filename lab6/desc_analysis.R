@@ -30,12 +30,14 @@ maxs
 quartilies = apply(data,2,quantile)
 quartilies
 #Делаем графики боксплотов
-par(mfrow=c(4,4))
-for(i in 1:(length(colnames(data)))){
+par(mfrow=c(3,3))
+for(i in 1:(length(colnames(data))-5)){
   boxplot(data[,i],main=colnames(data)[i])
 }
-colnames(data)
-length(colnames(data))
+par(mfrow=c(3,2))
+for(i in (length(colnames(data))-4):(length(colnames(data)))){
+  boxplot(data[,i],main=colnames(data)[i])
+}
 
 #Смотрим распределение
 par(mfrow=c(4,4))
